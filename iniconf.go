@@ -9,6 +9,10 @@
  It also allows for notifications to be sent to observers when sections
  or keys change either explictly via calls to the instance, or via a call to Reload()
 
+ When saving/updating files it preserves the original order of entries that were in the file
+ on disk at the point it's saved, along with any comments and spacing contained in it.
+
+
  The IniConf type reads and writes .ini files and provides access to their contents.
 
  The ChainConf type allows multiple .ini files (on disk or in memory) to be chained together,
