@@ -56,6 +56,15 @@ func boolFetcher(i *IniConf, sectionName, entryName string) (interface{}, error)
 	return i.EntryBool(sectionName, entryName)
 }
 
+func (cc *ConfChain) HasSection(sectionName string) bool {
+	for _, i := range cc.confSet {
+		if i.HasSection(sectionName) {
+			return true
+		}
+	}
+	return false
+}
+
 // EntryString fetches a string entry from a section from the first IniConf that returns a value.
 func (cc *ConfChain) EntryString(sectionName, entryName string) (string, error) {
 	result, err := cc.fetchEntry(sectionName, entryName, stringFetcher)
