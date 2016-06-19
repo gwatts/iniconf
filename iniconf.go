@@ -594,6 +594,26 @@ func (i *IniConf) EntryNames(sectionName string) (result []string) {
 	return s.entryNames()
 }
 
+// ReadSection maps an IniConf section into a struct
+//
+// Each field in the struct to be read from the section should be tagged
+// with `iniconf:"keyname"`
+//
+// Only string, bool and int types are supported
+//
+// Nested structs are flattened into the parent's namespace.
+func (i *IniConf) ReadSection(sectionName string, v interface{}) error {
+	return readSection(i, sectionName, v)
+}
+
+// LoadSection takes a struct tagged with `iniconf:"keyname"` fields
+// and loads those fields into the named section.
+//
+// Nested structs are flattened into the parent's namespace.
+func (i *IniConf) LoadSection(sectionName string, v interface{}) error {
+	return loadSection(i, sectionName, v)
+}
+
 // A section represents one named group of settings in the configuration file.
 type section struct {
 	iniConf   *IniConf

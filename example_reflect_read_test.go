@@ -20,10 +20,10 @@ type section struct {
 	}
 }
 
-func ExampleReadSectionInto() {
+func ExampleReadSection() {
 	var s section
 	cfg, _ := iniconf.LoadString(inifile, false)
-	if err := iniconf.ReadSectionInto(cfg, "mysection", &s); err != nil {
+	if err := cfg.ReadSection("mysection", &s); err != nil {
 		fmt.Println("Failed", err)
 		return
 	}

@@ -21,7 +21,7 @@ func ExampleWriteIntoSection() {
 	}
 	s.Sub.SubValue = "nested value"
 
-	if err := iniconf.WriteIntoSection(cfg, "mysection", s); err != nil {
+	if err := cfg.LoadSection("mysection", s); err != nil {
 		fmt.Println("Failed", err)
 	}
 

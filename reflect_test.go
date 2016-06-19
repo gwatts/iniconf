@@ -39,13 +39,13 @@ type rsSub struct {
 	ignored *rsType
 }
 
-func TestReadSectionInfo(t *testing.T) {
+func TestReadSection(t *testing.T) {
 	var target rsType
-	i, err := LoadString(rsIni, false)
+	cfg, err := LoadString(rsIni, false)
 	if err != nil {
 		t.Fatal("Failed to parse data", err)
 	}
-	if err := ReadSectionInto(i, "section one", &target); err != nil {
+	if err := cfg.ReadSection("section one", &target); err != nil {
 		t.Fatal("Unexpected error", err)
 	}
 	expected := rsType{
@@ -65,7 +65,7 @@ func TestReadSectionInfo(t *testing.T) {
 }
 
 func TestWriteIntoSection(t *testing.T) {
-	c := New(false)
+	cfg := New(false)
 	i2 := int64(456)
 	s1 := "s1"
 	b2 := true
@@ -82,7 +82,7 @@ func TestWriteIntoSection(t *testing.T) {
 		Iface: "iface-value",
 	}
 	v.Sub.ignored = v
-	if err := WriteIntoSection(c, "test-section", v); err != nil {
+	if err := cfg.LoadSection("test-section", v); err != nil {
 		t.Fatal("Unexpected error", err)
 	}
 	expected := strings.TrimSpace(`
@@ -96,7 +96,7 @@ int2 = 456
 iface = iface-value
 subkey = sub-value`)
 
-	result := strings.TrimSpace(c.String())
+	result := strings.TrimSpace(cfg.String())
 	if result != expected {
 		t.Fatal("Result does not match expected")
 	}

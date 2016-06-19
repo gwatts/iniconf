@@ -11,15 +11,16 @@ var (
 	ErrInvalidFieldType = errors.New("target must be a string, int or bool")
 )
 
-// ReadSectionInto maps an IniConf section into a struct
-//
-// Each field in the struct to be loaded from the section should be tagged
-// with `iniconf:"keyname"`
-//
-// Only string, bool and int types are supported
-//
-// Nested structs are flattened into the parent's namespace.
-func ReadSectionInto(source Reader, section string, v interface{}) error {
+// Reader provides read access to a section
+// It is implemented by both Iniconf and ConfChain
+type reader interface {
+	HasSection(sectionName string) bool
+	EntryString(sectionName, entryName string) (string, error)
+	EntryInt(sectionName, entryName string) (int64, error)
+	EntryBool(sectionName, entryName string) (bool, error)
+}
+
+func readSection(source reader, section string, v interface{}) error {
 	rpv := reflect.ValueOf(v)
 	if rpv.Kind() != reflect.Ptr || rpv.IsNil() {
 		return ErrInvalidType
@@ -79,11 +80,7 @@ func ReadSectionInto(source Reader, section string, v interface{}) error {
 	})
 }
 
-// WriteIntoSection takes a struct tagged with `iniconf:"keyname"` fields
-// and writes those fields into the named section.
-//
-// Nested structs are flattened into the parent's namespace.
-func WriteIntoSection(c *IniConf, sectionName string, v interface{}) error {
+func loadSection(c *IniConf, sectionName string, v interface{}) error {
 	rv := reflect.ValueOf(v)
 	if rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()

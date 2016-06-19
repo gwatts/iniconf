@@ -121,3 +121,15 @@ func (cc *ConfChain) EntryBoolP(sectionName, entryName string) bool {
 	}
 	return result.(bool)
 }
+
+// ReadSection maps an IniConf section into a struct
+//
+// Each field in the struct to be read from the section should be tagged
+// with `iniconf:"keyname"`
+//
+// Only string, bool and int types are supported
+//
+// Nested structs are flattened into the parent's namespace.
+func (cc *ConfChain) ReadSection(sectionName string, v interface{}) error {
+	return readSection(cc, sectionName, v)
+}
