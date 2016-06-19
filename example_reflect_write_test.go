@@ -12,7 +12,7 @@ type cfgsection struct {
 	}
 }
 
-func ExampleWriteIntoSection() {
+func ExampleIniConf_LoadSection() {
 	cfg := iniconf.New(false)
 	s := cfgsection{
 		Value1: "First value",
