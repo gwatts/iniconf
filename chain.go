@@ -56,6 +56,15 @@ func boolFetcher(i *IniConf, sectionName, entryName string) (interface{}, error)
 	return i.EntryBool(sectionName, entryName)
 }
 
+func (cc *ConfChain) HasSection(sectionName string) bool {
+	for _, i := range cc.confSet {
+		if i.HasSection(sectionName) {
+			return true
+		}
+	}
+	return false
+}
+
 // EntryString fetches a string entry from a section from the first IniConf that returns a value.
 func (cc *ConfChain) EntryString(sectionName, entryName string) (string, error) {
 	result, err := cc.fetchEntry(sectionName, entryName, stringFetcher)
@@ -111,4 +120,16 @@ func (cc *ConfChain) EntryBoolP(sectionName, entryName string) bool {
 		panic(err)
 	}
 	return result.(bool)
+}
+
+// ReadSection maps an IniConf section into a struct
+//
+// Each field in the struct to be read from the section should be tagged
+// with `iniconf:"keyname"`
+//
+// Only string, bool and int types are supported
+//
+// Nested structs are flattened into the parent's namespace.
+func (cc *ConfChain) ReadSection(sectionName string, v interface{}) error {
+	return readSection(cc, sectionName, v)
 }
